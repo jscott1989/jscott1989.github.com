@@ -18,7 +18,7 @@ body {
 	display: inline-block;
 }
 
-#header h2 {
+#header h1 {
 	font-size:4.3em;
 }
 
@@ -29,7 +29,7 @@ body {
 #column1 .inner {
 	border-left: 10px solid #FF765E;
 }
-#column1 h2 {
+#column1 h1 {
 	background: url('../img/card-address.png') no-repeat #FF765E;
 	padding-left: 38px;
 }
