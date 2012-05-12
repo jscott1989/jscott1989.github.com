@@ -18,7 +18,7 @@ body {
 	display: inline-block;
 }
 
-#header h2 {
+#header h1 {
 	font-size:4.3em;
 }
 
@@ -63,6 +63,19 @@ body {
 #column3 h2 {
 	background: url('../img/monitor.png') no-repeat #B7BDC4;
 	padding-left: 38px;
+}
+
+#column3 ul {
+	list-style: none;
+	margin: 0;
+}
+
+#column3 li {
+	display: inline-block;
+}
+
+#column3 img {
+	width:87px;
 }
 
 #header, #footer, #footer a {
