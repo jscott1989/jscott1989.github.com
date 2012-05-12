@@ -25,8 +25,10 @@ title: JScott.me
 			<div class="content">
 				<ul>
 					{% for post in paginator.posts %}
-						{% unless post.category == "portfolio" %} 
-							<li><a href="{{ post.url }}">{{ post.title }}</a></li>
+						{% unless post.category == "portfolio" %}
+							{% unless post.category == "stuff-i-do" %}
+								<li><a href="{{ post.url }}">{{ post.title }}</a></li>
+							{% endunless %}
 						{% endunless %}
 					{% endfor %}
 				</ul>
@@ -34,11 +36,33 @@ title: JScott.me
 		</div>
 	</div>
 	<div id="column3" class="span4">
-		<div class="inner">
+		<div class="inner" id="stuff_i_do">
 			<h2>Stuff I do</h2>
 			<div class="content">
 				<ul>
+					{% for post in site.categories.stuff-i-do %}
+						<li><img alt="{{ post.title }}" title="{{ post.title }}" src="static/img/portfolio/small/{{ post.img }}.png"></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="inner" id="stuff_i_did">
+			<h2>Stuff I did</h2>
+			<div class="content">
+				<ul>
 					{% for post in site.categories.portfolio %}
+						<li><img alt="{{ post.title }}" title="{{ post.title }}" src="static/img/portfolio/small/{{ post.img }}.png"></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="inner" id="academics">
+			<h2>Academics 'n' that</h2>
+			<div class="content">
+				<ul>
+					{% for post in site.categories.academic %}
 						<li><img alt="{{ post.title }}" title="{{ post.title }}" src="static/img/portfolio/small/{{ post.img }}.png"></li>
 					{% endfor %}
 				</ul>

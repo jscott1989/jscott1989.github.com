@@ -57,11 +57,21 @@ body {
 	padding-left: 20px;
 }
 
-#column3 .inner {
-	border-left: 10px solid #B7BDC4;
+#stuff_i_do {
+	border-left: 10px solid #A9CF54;
+	margin-bottom:20px;
 }
-#column3 h2 {
-	background: url('../img/monitor.png') no-repeat #B7BDC4;
+#stuff_i_do h2 {
+	background: url('../img/monitor.png') no-repeat #A9CF54;
+	padding-left: 38px;
+}
+
+#stuff_i_did {
+	border-left: 10px solid #B7BDC4;
+	margin-bottom: 20px;
+}
+#stuff_i_did h2 {
+	background: url('../img/did.png') no-repeat #B7BDC4;
 	padding-left: 38px;
 }
 
@@ -75,7 +85,15 @@ body {
 }
 
 #column3 img {
-	width:87px;
+	width:80px;
+}
+
+#academics {
+	border-left: 10px solid #B1DDF3;
+}
+#academics h2 {
+	background: url('../img/notebook.png') no-repeat #B1DDF3;
+	padding-left: 38px;
 }
 
 #header, #footer, #footer a {
