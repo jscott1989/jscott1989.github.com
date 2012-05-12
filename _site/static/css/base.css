@@ -30,7 +30,8 @@ body {
 	border-left: 10px solid #FF765E;
 }
 #column1 h1 {
-	background: #FF765E;
+	background: url('../img/card-address.png') no-repeat #FF765E;
+	padding-left: 38px;
 }
 
 #column1 p {
@@ -41,7 +42,9 @@ body {
 	border-left: 10px solid #FCCF65;
 }
 #column2 h2 {
-	background: #FCCF65;
+	background: url('../img/balloon.png') no-repeat #FCCF65;
+	padding-left: 38px;
+
 }
 
 #column2 ul {
@@ -58,7 +61,8 @@ body {
 	border-left: 10px solid #B7BDC4;
 }
 #column3 h2 {
-	background: #B7BDC4;
+	background: url('../img/monitor.png') no-repeat #B7BDC4;
+	padding-left: 38px;
 }
 
 #header, #footer, #footer a {
