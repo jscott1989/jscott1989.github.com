@@ -1,2 +1,3 @@
 auto: true
 paginate:    30
+paginate_exclude: portfolio

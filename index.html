@@ -35,7 +35,11 @@ title: JScott.me
 		<div class="inner">
 			<h2>Stuff I do</h2>
 			<div class="content">
-				<p>Going to put something here</p>
+				<ul>
+					{% for post in site.categories.portfolio %}
+						<li>{{ post.title }}</li>
+					{% endfor %}
+				</ul>
 			</div>
 		</div>
 	</div>
