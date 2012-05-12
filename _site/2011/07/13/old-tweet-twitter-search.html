@@ -1,0 +1,35 @@
+<article id="post">
+	<h1><a href="/">&larr; Old Tweet/Twitter Search</a></h1>
+	So apparently Twitter search only goes back 2 weeks. While this is perfectly acceptable when looking at the latest news, when looking for information about a topic over time (such as what I'm looking at in my dissertation) it's pretty much useless. One of the best places to search for tweets of links (BackTweets) has recently been purchased by Twitter and is no longer accepting registrations... not good for me...
+<br />
+<br />Part of my dissertation involves getting the opinions of twitter users about a particular URL, and I suppose I didn't fully think about the issues before starting this because now that I'm trying to do it there are two major problems. Leaving aside the problem of url shortening making it very difficult to find all references to a document (I'll cover this is a future blog post), there are problems actually finding old tweets at all. There are a few ways of searching for tweets, each with their advantages and disadvantages, which I'll detail below.
+<br />
+<br /><strong>Twitter Search</strong>
+<br /><p><img src="http://jscott.me/tumblr/myTumblr_Image_1310570344.jpg" /></p>
+<br />
+<br />As I said, this only goes back about 2 weeks, so it's kind of useless. I find myself only using the Twitter api to look up more details about the tweets found by other methods.
+<br />
+<br /><strong>FriendFeed Search</strong>
+<br /><p><img src="http://jscott.me/tumblr/myTumblr_Image_1310570581.jpg" /></p>
+<br />
+<br />By searching Friendfeed with the query "service:twitter YOUR SEARCH" you will search for YOUR SEARCH on Twitter and it goes quite far back (as you can see from the image) however I'm not sure how complete it is.
+<br />
+<br />You can easily get the tweet ID from FriendFeed then look it up using the Twitter API
+<br />
+<br /><strong>Google Search
+</strong><br /><strong><p><img src="http://jscott.me/tumblr/myTumblr_Image_1310571862.jpg" /></p>
+</strong><br />
+<br />Although Google recently shut down Google Replay (which would have been incredibly useful for my dissertation - why couldn't they have kept it open for just a few months longer !?!?) you can still use plain old Google search to view old tweets by using the query "site:twitter.com inurl:/status/ YOUR SEARCH" will link to the webpages for tweets going back a long time (the tweet shown in the image is from 1 year ago)
+<br />
+<br />One problem with this is that API access (via "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=") is really restrictive. I keep getting banned when trying to get a few tweets.
+<br />
+<br /><strong>Topsy
+</strong><br /><strong><p><img src="http://jscott.me/tumblr/myTumblr_Image_1310573592.jpg" /></p></strong>
+<br />Topsy seems interesting, and even solves the problem of shorturls by expanding the short urls before searching. However, the above result came from a search for "http://google.com", and the link points to some spam. On other searches it does perform accurately though so this is a good place to look, as long as you verify the links afterwards.
+<br />
+<br /><strong>Bing Social Search
+</strong><br />There's also Bing Social search, which seems interesting but I think it focuses mostly on live tweets rather than historic tweets, I don't think this will be useful.
+<br />
+<br />So those are all the useful websites I can find - does anyone else have any suggestions? Right now I'm putting together a service which pulls together these sources to produce something slightly more complete, but I'm not sure how confident I am of getting something together usable for the dissertation. I will probably have to mock out this bit and do a lot of manual work... *sigh*... we'll see.<br />
+
+</article>

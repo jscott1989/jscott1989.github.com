@@ -44,6 +44,16 @@ body {
 	background: #FCCF65;
 }
 
+#column2 ul {
+	list-style: none;
+	margin:0;
+}
+
+#column2 li {
+	background: url(../img/blog-medium.png) no-repeat;
+	padding-left: 20px;
+}
+
 #column3 .inner {
 	border-left: 10px solid #B7BDC4;
 }
