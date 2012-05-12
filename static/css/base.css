@@ -1,22 +1,36 @@
 body {
+	background: #FFEFDB;
 	padding-top: 10px;
+	padding-bottom: 10px;
 	font-family: 'Averia Libre', cursive;
 }
 
 #header {
-	color: #FFF;
 	margin-bottom:10px;
+}
+
+#footer {
+	margin-top: 10px;
+	text-align: center;
+}
+
+#footer ul li {
+	display: inline-block;
 }
 
 #header h1 {
 	font-size:4.3em;
 }
 
+.inner .content {
+	padding: 10px;
+}
+
 #column1 .inner {
-	border-left: 10px solid #F9EA99;
+	border-left: 10px solid #FF765E;
 }
 #column1 h1 {
-	background: #F9EA99;
+	background: #FF765E;
 }
 
 #column1 p {
@@ -24,19 +38,20 @@ body {
 }
 
 #column2 .inner {
-	border-left: 10px solid #7DB6D5;
+	border-left: 10px solid #FCCF65;
 }
 #column2 h2 {
-	background: #7DB6D5;
+	background: #FCCF65;
 }
 
 #column3 .inner {
-	border-left: 10px solid #E7A555;
+	border-left: 10px solid #B7BDC4;
 }
 #column3 h2 {
-	background: #E7A555;
+	background: #B7BDC4;
 }
 
-#header, #footer {
-	background: #9D2E2C;
+#header, #footer, #footer a {
+	background: #C2AE8B;
+	color: #FFEFDB;
 }
