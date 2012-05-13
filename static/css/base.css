@@ -23,7 +23,7 @@ body {
 }
 
 .inner .content {
-	padding: 10px;
+	padding: 10px 10px 0px 10px;
 }
 
 #column1 .inner {
@@ -52,9 +52,24 @@ body {
 	margin:0;
 }
 
-#column2 li {
+.post {
+	list-style: none;
 	background: url(../img/blog-medium.png) no-repeat;
 	padding-left: 20px;
+}
+
+.more {
+	background: #FCCF65;
+	text-align: center;
+	width: 100%;
+	margin-top:10px;
+}
+
+.more a {
+	color: #000;
+	font-weight: bold;
+	width: 100%;
+	display: inline-block;
 }
 
 #stuff_i_do {
@@ -64,6 +79,10 @@ body {
 #stuff_i_do h2 {
 	background: url('../img/monitor.png') no-repeat #A9CF54;
 	padding-left: 38px;
+}
+
+#stuff_i_do .more {
+	background: #A9CF54;
 }
 
 #stuff_i_did {

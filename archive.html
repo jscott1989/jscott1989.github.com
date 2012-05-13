@@ -1,0 +1,16 @@
+---
+layout: base
+title: JScott.me Archive
+---
+<h1><a href="/">&larr; Archive</a></h1>
+<ul>
+	{% for post in site.posts %}
+		{% unless post.category == "portfolio" %}
+			{% unless post.category == "stuff-i-do" %}
+				{% unless post.category == "academic" %}
+					<li class="post"><a href="{{ post.url }}">{{ post.title }}</a></li>
+				{% endunless %}
+			{% endunless %}
+		{% endunless %}
+	{% endfor %}
+</ul>
