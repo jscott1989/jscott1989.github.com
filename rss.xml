@@ -15,14 +15,16 @@ layout: nil
     {% for post in site.posts %}
       {% unless post.category == "portfolio" %}
         {% unless post.category == "stuff-i-do" %}
-          <item>
-            <title>{{ post.title }}</title>
-            <link>http://jscott.me{{ post.url }}</link>
-            <pubDate>{{ post.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
-            <author>jonathanscott1989@gmail.com (Jonathan Scott)</author>
-            <guid>http://jscott.me{{ post.id }}</guid>
-            <description>{{ post.content | xml_escape }}</description>
-          </item>
+          {% unless post.category == "academic" %}
+            <item>
+              <title>{{ post.title }}</title>
+              <link>http://jscott.me{{ post.url }}</link>
+              <pubDate>{{ post.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
+              <author>jonathanscott1989@gmail.com (Jonathan Scott)</author>
+              <guid>http://jscott.me{{ post.id }}</guid>
+              <description>{{ post.content | xml_escape }}</description>
+            </item>
+          {% endunless %}
         {% endunless %}
       {% endunless %}
     {% endfor %}

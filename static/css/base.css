@@ -71,7 +71,7 @@ body {
 	margin-bottom: 20px;
 }
 #stuff_i_did h2 {
-	background: url('../img/did.png') no-repeat #B7BDC4;
+	background: url('../img/did.png') 0px 3px no-repeat #B7BDC4;
 	padding-left: 38px;
 }
 
@@ -85,7 +85,7 @@ body {
 }
 
 #column3 img {
-	width:80px;
+	max-width:80px;
 }
 
 #academics {
