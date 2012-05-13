@@ -1,0 +1,10 @@
+---
+layout: base
+title: JScott.me Stuff
+---
+<h1><a href="/">&larr; Stuff I do</a></h1>
+<ul>
+	{% for post in site.categories.stuff-i-do %}
+		<li class="post"><a href="{{ post.url }}">{{ post.title }}</a></li>
+	{% endfor %}
+</ul>
