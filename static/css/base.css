@@ -100,3 +100,9 @@ body {
 	background: #C2AE8B;
 	color: #FFEFDB;
 }
+
+@media (max-width: 767px) {
+	#column1, #column2 {
+		margin-bottom: 20px;
+	}
+}
