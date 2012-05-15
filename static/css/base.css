@@ -146,6 +146,9 @@ body {
 
 #portfolio span {
 	margin-right: 5px;
+	width: 55px;
+	display: inline-block;
+	text-align: center;
 }
 
 #portfolio .academic {
