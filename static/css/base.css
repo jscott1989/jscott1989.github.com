@@ -114,16 +114,16 @@ body {
 	background: #A9CF54;
 }
 
-#stuff_i_did {
+#portfolio {
 	border-left: 10px solid #B7BDC4;
 	margin-bottom: 20px;
 }
-#stuff_i_did h2 {
+#portfolio h2 {
 	background: url('../img/did.png') 0px 3px no-repeat #B7BDC4;
 	padding-left: 38px;
 }
 
-#stuff_i_did .more {
+#portfolio .more {
 	background: #B7BDC4;
 }
 
@@ -132,20 +132,36 @@ body {
 	margin: 0;
 }
 
-#column3 li {
+#stuff_i_do li {
 	display: inline-block;
 }
 
-#column3 img {
-	max-width:80px;
+#stuff_i_do img {
+	max-width: 80px;
 }
 
-#academics {
-	border-left: 10px solid #B1DDF3;
+#portfolio li {
+	padding-left: 20px;
 }
-#academics h2 {
-	background: url('../img/notebook.png') no-repeat #B1DDF3;
-	padding-left: 38px;
+
+#portfolio span {
+	margin-right: 5px;
+}
+
+#portfolio .academic {
+	background: url('../img/icons/academic.png') 0px 3px no-repeat;
+}
+#portfolio .job {
+	background: url('../img/icons/job.png') no-repeat;
+}
+#portfolio .webapplication {
+	background: url('../img/icons/webapplication.png') no-repeat;
+}
+#portfolio .application {
+	background: url('../img/icons/application.png') no-repeat;
+}
+#portfolio .library {
+	background: url('../img/icons/library.png') no-repeat;
 }
 
 #header, #footer, #footer a {
