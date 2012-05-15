@@ -23,28 +23,48 @@ body {
 }
 
 .inner .content {
-	padding: 10px 10px 0px 10px;
+	padding: 10px 0px 0px 10px;
 }
 
-#column1 .inner {
+.colour1 .inner {
 	border-left: 10px solid #FF765E;
 }
+
+.colour1 h2 {
+	background: #FF765E;
+}
+
 #column1 h2 {
-	background: url('../img/card-address.png') no-repeat #FF765E;
+	background-image: url('../img/card-address.png');
+	background-repeat: no-repeat;
 	padding-left: 38px;
+}
+
+#column1 img {
+	width: 100%;
+	margin-bottom:1em;
+}
+
+.colour1 a {
+	color: #FF765E;
 }
 
 #column1 p {
 	text-align: justify;
 }
 
-#column2 .inner {
+.colour2 .inner {
 	border-left: 10px solid #FCCF65;
 }
-#column2 h2 {
-	background: url('../img/balloon.png') no-repeat #FCCF65;
-	padding-left: 38px;
 
+.colour2 h2 {
+	background: #FCCF65;
+}
+
+#column2 h2 {
+	background-image: url('../img/balloon.png');
+	background-repeat: no-repeat;
+	padding-left: 38px;
 }
 
 #column2 ul {
@@ -72,12 +92,21 @@ body {
 	display: inline-block;
 }
 
-#stuff_i_do {
+.colour3 {
 	border-left: 10px solid #A9CF54;
+}
+
+#stuff_i_do {
 	margin-bottom:20px;
 }
+
+.colour3 h2 {
+	background: #A9CF54;
+}
+
 #stuff_i_do h2 {
-	background: url('../img/monitor.png') no-repeat #A9CF54;
+	background-image: url('../img/monitor.png');
+	background-repeat: no-repeat;
 	padding-left: 38px;
 }
 
@@ -92,6 +121,10 @@ body {
 #stuff_i_did h2 {
 	background: url('../img/did.png') 0px 3px no-repeat #B7BDC4;
 	padding-left: 38px;
+}
+
+#stuff_i_did .more {
+	background: #B7BDC4;
 }
 
 #column3 ul {
