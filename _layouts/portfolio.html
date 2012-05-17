@@ -10,8 +10,21 @@ layout: base
 	<div class="span8">
 		{{ content }}
 	</div>
-<!--	<div class="span4">
-		<div class="colour1">
+
+	<div class="span4">
+		{% if page.downloads %}
+			<div id="downloads" class="colour3">
+				<div class="inner">
+					<h2>Downloads</h2>
+					<ul>
+						{% for download in page.downloads %}
+							<li{% if download.class %} class="{{download.class}}"{% endif %}><a href="{{download.url}}">{{download.label}}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+		<!--<div class="colour1">
 			<div class="inner">
 				<h2>Company</h2>
 				<div class="content">
@@ -32,7 +45,7 @@ layout: base
 			<div class="content">
 				<p>LOL</p>
 			</div>
-		</div>
-	</div> -->
+		</div>-->
+	</div>
 </div>
 </article>

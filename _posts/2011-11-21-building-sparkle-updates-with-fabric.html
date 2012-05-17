@@ -7,129 +7,131 @@ tags:
 type: regular
 ---
 
-&#13;
-<p>This is my <a href="http://docs.fabfile.org/">fabfile</a> which builds and releases a version of my Objective-C project. It updates the version (resetting it to 99.99.99 afterwards), swaps development and live versions of files, builds the system, creates and uploads deltas used for <a href="http://sparkle.andymatuschak.org/">Sparkle</a> and finally uploads the latest version itself. I'm sure it's not perfect but it might help others trying to do the same thing.</p>&#13;
-&#13;
-<pre>from fabric.api import local, run, env, settings&#13;
-from fabric.operations import put, prompt&#13;
-&#13;
-import os&#13;
-&#13;
-# Requires py2app&#13;
-import plistlib&#13;
-from plistlib import Plist&#13;
-&#13;
-import zipfile&#13;
-&#13;
-import os,stat, sys&#13;
-from cStringIO import StringIO&#13;
-&#13;
-import urllib2_file&#13;
-import urllib2&#13;
-&#13;
-import shutil&#13;
-&#13;
-# set env variables here…&#13;
-&#13;
-def ZipDir(inputDir, outputZip):&#13;
-    '''Zip up a directory and preserve symlinks and empty directories'''&#13;
-    zipOut = zipfile.ZipFile(outputZip, 'w', compression=zipfile.ZIP_DEFLATED)&#13;
-    &#13;
-    rootLen = len(os.path.dirname(inputDir))&#13;
-    def _ArchiveDirectory(parentDirectory):&#13;
-        contents = os.listdir(parentDirectory)&#13;
-        #store empty directories&#13;
-        if not contents:&#13;
-            #http://www.velocityreviews.com/forums/t318840-add-empty-directory-using-zipfile.html&#13;
-            archiveRoot = parentDirectory[rootLen:].replace('\\', '/').lstrip('/')&#13;
-            zipInfo = zipfile.ZipInfo(archiveRoot+'/')&#13;
-            zipOut.writestr(zipInfo, '')&#13;
-        for item in contents:&#13;
-            fullPath = os.path.join(parentDirectory, item)&#13;
-            if os.path.isdir(fullPath) and not os.path.islink(fullPath):&#13;
-                _ArchiveDirectory(fullPath)&#13;
-            else:&#13;
-                archiveRoot = fullPath[rootLen:].replace('\\', '/').lstrip('/')&#13;
-                if os.path.islink(fullPath):&#13;
-                    # http://www.mail-archive.com/python-list@python.org/msg34223.html&#13;
-                    zipInfo = zipfile.ZipInfo(archiveRoot)&#13;
-                    zipInfo.create_system = 3&#13;
-                    # long type of hex val of '0xA1ED0000L',&#13;
-                    # say, symlink attr magic...&#13;
-                    zipInfo.external_attr = 2716663808L&#13;
-                    zipOut.writestr(zipInfo, os.readlink(fullPath))&#13;
-                else:&#13;
-                    zipOut.write(fullPath, archiveRoot, zipfile.ZIP_DEFLATED)&#13;
-    _ArchiveDirectory(inputDir)&#13;
-    &#13;
-    zipOut.close()&#13;
-&#13;
-&#13;
-def build(version):&#13;
-    """ Build with a specified version """&#13;
-    with settings(warn_only=True):&#13;
-        plist = Plist.fromFile('SeaweedPlayer-Info.plist')&#13;
-        plist['CFBundleVersion'] = version&#13;
-        plist['CFBundleShortVersionString'] = version&#13;
-        plistlib.writePlist(plist, 'SeaweedPlayer-Info.plist')&#13;
-&#13;
-        os.rename('SeaweedPlayer/Configuration.m', 'SeaweedPlayer/ConfigurationDev.m')&#13;
-        os.rename('SeaweedPlayer/ConfigurationLive.m', 'SeaweedPlayer/Configuration.m')&#13;
-&#13;
-        result = local('xcodebuild -project SeaweedPlayer.xcodeproj -target Release')&#13;
-&#13;
-        plist['CFBundleVersion'] = '99.99.99'&#13;
-        plist['CFBundleShortVersionString'] = '99.99.99'&#13;
-        plistlib.writePlist(plist, 'SeaweedPlayer-Info.plist')&#13;
-&#13;
-        os.rename('SeaweedPlayer/Configuration.m', 'SeaweedPlayer/ConfigurationLive.m')&#13;
-        os.rename('SeaweedPlayer/ConfigurationDev.m', 'SeaweedPlayer/Configuration.m')&#13;
-    if result.failed:&#13;
-        return False&#13;
-    return True&#13;
-&#13;
-def release(version, deltas=''):&#13;
-    if build(version):&#13;
-        ZipDir("build/Release/SeaweedPlayer.app", "seaweed_" + version + ".zip")&#13;
-&#13;
-        # At this point we have a seaweed_1.0.zip file containing the .app&#13;
-        shutil.copytree("build/Release/SeaweedPlayer.app", "old_builds/" + version + ".app", symlinks=True)&#13;
-&#13;
-        # Create deltas from specified versions&#13;
-        deltas = deltas.split(':')&#13;
-        for delta in deltas:&#13;
-            local("./BinaryDelta create old_builds/" + delta + ".app/ old_builds/" + version + ".app/ delta_" + delta + "_" + version)&#13;
-&#13;
-            # Upload the file&#13;
-            put("delta_" + delta + "_" + version, "/home/public/updates/delta_" + delta + "_" + version)&#13;
-&#13;
-            # Sign it&#13;
-            signature = local("openssl dgst -sha1 -binary &lt; \"delta_" + delta + "_" + version + "\" | openssl dgst -dss1 -sign \"dsa_priv.pem\" | openssl enc -base64", capture=True)&#13;
-&#13;
-            # Insert into the database&#13;
-            run('echo "use seaweed; INSERT INTO update_deltas SET to_version = \'%s\', from_version = \'%s\', signature = \'%s\';"|mysql --batch --user=%s --password=%s --host=%s' % (version, delta, signature, env.mysqluser, env.mysqlpassword, env.mysqlhost), pty=True)&#13;
-&#13;
-            local("rm delta_" + delta + "_" + version)&#13;
-        &#13;
-        # Sign it&#13;
-        signature = local("openssl dgst -sha1 -binary &lt; \"seaweed_" + version + ".zip\" | openssl dgst -dss1 -sign \"dsa_priv.pem\" | openssl enc -base64", capture=True)&#13;
-        &#13;
-        if os.path.isfile("description.txt"):&#13;
-            description = open('description.txt').read()&#13;
-            local("rm description.txt")&#13;
-        else:&#13;
-            description = prompt('What is the description of the update?')&#13;
-&#13;
-        # Upload the file&#13;
-        put('seaweed_' + version + '.zip', '/home/public/updates/seaweed_' + version + '.zip')&#13;
-&#13;
-        # Insert into the database&#13;
-        run('echo "use seaweed; INSERT INTO updates SET version = \'%s\', description = \'%s\', signature = \'%s\';"|mysql --batch --user=%s --password=%s --host=%s' % (version, description, signature, env.mysqluser, env.mysqlpassword, env.mysqlhost), pty=True)&#13;
-&#13;
-        # Update front page&#13;
-        run("echo '<!--?php $version = \"" + version + "\";'  --> _version.php")&#13;
-        &#13;
-        local("rm seaweed_" + version + ".zip;")&#13;
-    else:&#13;
-        print "Build Error"&#13;
-</pre> 
+
+<p>This is my <a href="http://docs.fabfile.org/">fabfile</a> which builds and releases a version of my Objective-C project. It updates the version (resetting it to 99.99.99 afterwards), swaps development and live versions of files, builds the system, creates and uploads deltas used for <a href="http://sparkle.andymatuschak.org/">Sparkle</a> and finally uploads the latest version itself. I'm sure it's not perfect but it might help others trying to do the same thing.</p>
+
+
+{% highlight python %}
+from fabric.api import local, run, env, settings
+from fabric.operations import put, prompt
+
+import os
+
+# Requires py2app
+import plistlib
+from plistlib import Plist
+
+import zipfile
+
+import os,stat, sys
+from cStringIO import StringIO
+
+import urllib2_file
+import urllib2
+
+import shutil
+
+# set env variables here…
+
+def ZipDir(inputDir, outputZip):
+    '''Zip up a directory and preserve symlinks and empty directories'''
+    zipOut = zipfile.ZipFile(outputZip, 'w', compression=zipfile.ZIP_DEFLATED)
+    
+    rootLen = len(os.path.dirname(inputDir))
+    def _ArchiveDirectory(parentDirectory):
+        contents = os.listdir(parentDirectory)
+        #store empty directories
+        if not contents:
+            #http://www.velocityreviews.com/forums/t318840-add-empty-directory-using-zipfile.html
+            archiveRoot = parentDirectory[rootLen:].replace('\\', '/').lstrip('/')
+            zipInfo = zipfile.ZipInfo(archiveRoot+'/')
+            zipOut.writestr(zipInfo, '')
+        for item in contents:
+            fullPath = os.path.join(parentDirectory, item)
+            if os.path.isdir(fullPath) and not os.path.islink(fullPath):
+                _ArchiveDirectory(fullPath)
+            else:
+                archiveRoot = fullPath[rootLen:].replace('\\', '/').lstrip('/')
+                if os.path.islink(fullPath):
+                    # http://www.mail-archive.com/python-list@python.org/msg34223.html
+                    zipInfo = zipfile.ZipInfo(archiveRoot)
+                    zipInfo.create_system = 3
+                    # long type of hex val of '0xA1ED0000L',
+                    # say, symlink attr magic...
+                    zipInfo.external_attr = 2716663808L
+                    zipOut.writestr(zipInfo, os.readlink(fullPath))
+                else:
+                    zipOut.write(fullPath, archiveRoot, zipfile.ZIP_DEFLATED)
+    _ArchiveDirectory(inputDir)
+    
+    zipOut.close()
+
+
+def build(version):
+    """ Build with a specified version """
+    with settings(warn_only=True):
+        plist = Plist.fromFile('SeaweedPlayer-Info.plist')
+        plist['CFBundleVersion'] = version
+        plist['CFBundleShortVersionString'] = version
+        plistlib.writePlist(plist, 'SeaweedPlayer-Info.plist')
+
+        os.rename('SeaweedPlayer/Configuration.m', 'SeaweedPlayer/ConfigurationDev.m')
+        os.rename('SeaweedPlayer/ConfigurationLive.m', 'SeaweedPlayer/Configuration.m')
+
+        result = local('xcodebuild -project SeaweedPlayer.xcodeproj -target Release')
+
+        plist['CFBundleVersion'] = '99.99.99'
+        plist['CFBundleShortVersionString'] = '99.99.99'
+        plistlib.writePlist(plist, 'SeaweedPlayer-Info.plist')
+
+        os.rename('SeaweedPlayer/Configuration.m', 'SeaweedPlayer/ConfigurationLive.m')
+        os.rename('SeaweedPlayer/ConfigurationDev.m', 'SeaweedPlayer/Configuration.m')
+    if result.failed:
+        return False
+    return True
+
+def release(version, deltas=''):
+    if build(version):
+        ZipDir("build/Release/SeaweedPlayer.app", "seaweed_" + version + ".zip")
+
+        # At this point we have a seaweed_1.0.zip file containing the .app
+        shutil.copytree("build/Release/SeaweedPlayer.app", "old_builds/" + version + ".app", symlinks=True)
+
+        # Create deltas from specified versions
+        deltas = deltas.split(':')
+        for delta in deltas:
+            local("./BinaryDelta create old_builds/" + delta + ".app/ old_builds/" + version + ".app/ delta_" + delta + "_" + version)
+
+            # Upload the file
+            put("delta_" + delta + "_" + version, "/home/public/updates/delta_" + delta + "_" + version)
+
+            # Sign it
+            signature = local("openssl dgst -sha1 -binary &lt; \"delta_" + delta + "_" + version + "\" | openssl dgst -dss1 -sign \"dsa_priv.pem\" | openssl enc -base64", capture=True)
+
+            # Insert into the database
+            run('echo "use seaweed; INSERT INTO update_deltas SET to_version = \'%s\', from_version = \'%s\', signature = \'%s\';"|mysql --batch --user=%s --password=%s --host=%s' % (version, delta, signature, env.mysqluser, env.mysqlpassword, env.mysqlhost), pty=True)
+
+            local("rm delta_" + delta + "_" + version)
+        
+        # Sign it
+        signature = local("openssl dgst -sha1 -binary &lt; \"seaweed_" + version + ".zip\" | openssl dgst -dss1 -sign \"dsa_priv.pem\" | openssl enc -base64", capture=True)
+        
+        if os.path.isfile("description.txt"):
+            description = open('description.txt').read()
+            local("rm description.txt")
+        else:
+            description = prompt('What is the description of the update?')
+
+        # Upload the file
+        put('seaweed_' + version + '.zip', '/home/public/updates/seaweed_' + version + '.zip')
+
+        # Insert into the database
+        run('echo "use seaweed; INSERT INTO updates SET version = \'%s\', description = \'%s\', signature = \'%s\';"|mysql --batch --user=%s --password=%s --host=%s' % (version, description, signature, env.mysqluser, env.mysqlpassword, env.mysqlhost), pty=True)
+
+        # Update front page
+        run("echo '<!--?php $version = \"" + version + "\";'  --> _version.php")
+        
+        local("rm seaweed_" + version + ".zip;")
+    else:
+        print "Build Error"
+{% endhighlight %}

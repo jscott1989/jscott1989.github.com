@@ -177,3 +177,34 @@ body {
 		margin-bottom: 20px;
 	}
 }
+
+
+
+/* Start Downloads */
+#downloads h2 {
+	background-image: url('../img/download.png');
+	background-repeat: no-repeat;
+	background-position-y: 2px;
+	padding-left: 38px;
+}
+
+#downloads ul {
+	list-style: none;
+	margin: 5px;
+}
+
+#downloads ul li {
+	padding-left: 20px;
+}
+
+#downloads ul li.application {
+	background-image: url('../img/icons/application.png');
+	background-repeat: no-repeat;
+}
+
+#downloads ul li.source {
+	background-image: url('../img/icons/code.png');
+	background-repeat: no-repeat;
+}
+
+/* End Downloads */
