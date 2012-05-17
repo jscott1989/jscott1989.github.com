@@ -1,0 +1,49 @@
+---
+layout: base
+---
+<div class="row">
+	<div class="span12">
+		<h1><a href="/">&larr; {{ page.title }}</a></h1>
+	</div>
+</div>
+<div class="row">
+	<div class="span8">
+		{{ content }}
+	</div>
+
+	<div class="span4">
+
+		{% if page.years %}
+			{% for year in page.years %}
+				<div class="year {{year.class}}">
+					<div class="inner">
+						<h2><span class="name">{{year.label}}</span><span class="grade">{{year.average}}</span></h2>
+						<ul>
+							{% for module in year.modules %}
+								<li class="{% cycle '', 'alt' %} {% if module.class %}{{module.class}}{% endif %}">
+									<span class="name">{{module.name}}</span>{% if module.grade %}<span class="grade">({{module.grade}})</span>{% endif %}
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			{% endfor %}
+		{% endif %}
+
+		{% if page.modules %}
+			<div id="modules" class="colour3">
+				<div class="inner">
+					<h2>Modules</h2>
+					<ul>
+						{% for module in page.modules %}
+							<li{% if module.class %} class="{{module.class}}"{% endif %}>
+								{{module.label}} {% if module.grade %}<span class="grade">({{module.grade}})</span>{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</div>
+</article>

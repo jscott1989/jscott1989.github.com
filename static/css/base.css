@@ -208,3 +208,35 @@ body {
 }
 
 /* End Downloads */
+
+
+/* Start uni */
+
+.year h2 {
+	padding-right: 5px;
+}
+
+.year .name {
+	display: inline-block;
+	width: 80%;
+}
+
+.year .grade {
+	display: inline-block;
+	width: 20%;
+}
+
+.year ul {
+	list-style: none;
+	margin: 0;
+}
+
+.year li {
+	padding: 0px 5px 0px 5px;
+}
+
+.year .alt {
+	background: #f1e0c4;
+}
+
+/* End uni */
