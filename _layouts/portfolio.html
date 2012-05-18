@@ -12,6 +12,23 @@ layout: base
 	</div>
 
 	<div class="span4">
+		{% if page.screenshots %}
+			<div id="screenshots" class="colour1">
+				<div class="inner">
+					{% if page.screenshots|length > 1 %}
+						<h2>Screenshots</h2>
+					{% else %}
+						<h2>Screenshot</h2>
+					{% endif %}
+					<div class="content">
+						{% for screenshot in page.screenshots %}
+							<a href="{{screenshot.url}}" target="_BLANK"><img src="{{screenshot.thumbnail}}"></a>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
 		{% if page.downloads %}
 			<div id="downloads" class="colour3">
 				<div class="inner">

@@ -220,7 +220,7 @@ body {
 	padding-left: 38px;
 }
 
-.year .name, #modules .name {
+.year .name {
 	display: inline-block;
 	width: 60%;
 }
@@ -231,12 +231,12 @@ body {
 	width: 40%;
 }
 
-.year ul, #modules ul {
+.year ul {
 	list-style: none;
 	margin: 0;
 }
 
-.year li, #modules ul {
+.year li {
 	padding: 0px 5px 0px 5px;
 }
 
