@@ -15,4 +15,12 @@ $(function() {
 			});
 		});
 	}
+
+
+	$('.cma').each(function() {
+		var href = $(this).attr('title') + '@' + $(this).attr('href');
+		$(this).text(href);
+		$(this).attr('href', 'm' + 'ai' + 'lto' + ':' + href);
+		$(this).removeAttr('title');
+	});
 });
