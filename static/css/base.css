@@ -160,6 +160,9 @@ body {
 #portfolio .webapplication {
 	background: url('../img/icons/webapplication.png') no-repeat;
 }
+#portfolio .game {
+	background: url('../img/icons/game.png') no-repeat;
+}
 #portfolio .application {
 	background: url('../img/icons/application.png') no-repeat;
 }
