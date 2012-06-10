@@ -184,34 +184,51 @@ body {
 
 
 /* Start Downloads */
-#downloads h2 {
+#downloads h2, #links h2 {
 	background-image: url('../img/download.png');
 	background-repeat: no-repeat;
 	background-position-y: 2px;
 	padding-left: 38px;
 }
 
-#downloads ul {
+#downloads ul, #links ul {
 	list-style: none;
 	margin: 5px;
 }
 
-#downloads ul li {
+#downloads ul li, #links ul li {
 	padding-left: 20px;
+	color: #777;
 }
 
-#downloads ul li.application {
+#downloads ul li.application, #links ul li.application {
 	background-image: url('../img/icons/application.png');
 	background-repeat: no-repeat;
 }
 
-#downloads ul li.source {
+#downloads ul li.source, #links ul li.source {
 	background-image: url('../img/icons/code.png');
+	background-repeat: no-repeat;
+}
+
+#downloads ul li.webapplication, #links ul li.webapplication {
+	background-image: url('../img/icons/webapplication.png');
 	background-repeat: no-repeat;
 }
 
 /* End Downloads */
 
+/* Start Links */
+
+/* End Links */
+#links h2 {
+	background-image: url('../img/link.png');
+}
+
+#links ul li {
+	background-image: url('../img/icons/website.png');
+	background-repeat: no-repeat;
+}
 
 /* Start uni */
 

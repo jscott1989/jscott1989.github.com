@@ -35,7 +35,20 @@ layout: base
 					<h2>Downloads</h2>
 					<ul>
 						{% for download in page.downloads %}
-							<li{% if download.class %} class="{{download.class}}"{% endif %}><a href="{{download.url}}">{{download.label}}</a></li>
+							<li{% if download.class %} class="{{download.class}}"{% endif %}><a href="{{download.url}}">{{download.label}}</a>{% if download.description%} {{download.description}}{% endif %}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if page.links %}
+			<div id="links" class="colour2">
+				<div class="inner">
+					<h2>Links</h2>
+					<ul>
+						{% for link in page.links %}
+							<li{% if link.class %} class="{{link.class}}"{% endif %}><a href="{{link.url}}">{{link.label}}</a>{% if link.description%} {{link.description}}{% endif %}</li>
 						{% endfor %}
 					</ul>
 				</div>
