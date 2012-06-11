@@ -2,6 +2,9 @@ body {
 	background: #FFEFDB;
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+h1, h2, h3, h4 {
 	font-family: 'Averia Libre', cursive;
 }
 
