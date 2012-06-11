@@ -216,6 +216,11 @@ body {
 	background-repeat: no-repeat;
 }
 
+#downloads ul li.webapplication, #links ul li.webapplication {
+	background-image: url('../img/icons/dissertation.png');
+	background-repeat: no-repeat;
+}
+
 /* End Downloads */
 
 /* Start Links */

@@ -29,6 +29,19 @@ layout: base
 				</div>
 			{% endfor %}
 		{% endif %}
+
+		{% if page.downloads %}
+			<div id="downloads" class="colour3">
+				<div class="inner">
+					<h2>Downloads</h2>
+					<ul>
+						{% for download in page.downloads %}
+							<li{% if download.class %} class="{{download.class}}"{% endif %}><a href="{{download.url}}">{{download.label}}</a>{% if download.description%} {{download.description}}{% endif %}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %}
 	</div>
 </div>
 </article>
