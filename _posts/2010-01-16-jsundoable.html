@@ -21,12 +21,12 @@ links:
 
 <p>First you need to create an UndoManager object, which controls the scope of every undo operation. You should have a separate UndoManager for unrelated undo queues, different tabs for example.</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	var undo = new UndoManager();
 {% endhighlight %}
 <p>This is then used to register the undo capabilities of each undoable function. For example, if an application has the following functions:</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	var total = 0;
 	
 	function add_to_total(number) {
@@ -36,7 +36,7 @@ links:
 
 <p>To make this undoable, the code would need to change to:</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	var total = 0;
 	
 	function add_to_total(number) {
@@ -46,7 +46,7 @@ links:
 {% endhighlight %}
 <p>(this assumes that the undo object is already created). With this setup the following code would result in an output of "1", "3", "6", "3", "1", "3", "1", "3" (as the application moves forwards and backwards through the undo queue).</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	var undo = new UndoManager();
 	var total = 0;
 	
@@ -79,7 +79,7 @@ links:
 
 <p>Groups are used to group (duh?) together the undo callbacks from a number of smaller functions. For example, look at the following code sample, taken (sans comments and lots of unrelated code) from my project Cognatus.</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	// ...
 	connectTo: function(operation, port) {
 		operation.setIn(port, this);
@@ -112,7 +112,7 @@ links:
 
 <p>The solution is to register the undoable objects at the lowest level possible and group them together in higher level functions, as shown below.</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	// ...
 	connectTo: function(operation, port) {
 		undo.startGroup('make connection');
@@ -159,7 +159,7 @@ links:
 
 <p>If a group has to be aborted, due to an error or exception, or any other reason it won't reach an endGroup call, the exitGroup function can be used</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	// Exit and roll back changes
 	undo.exitGroup();
 	
@@ -174,7 +174,7 @@ links:
 <p>If you're using model dialogs, or anything else using callbacks - it's sometimes important that you are able to group together undo objects from unrelated functions. This is possible because startGroup returns a numeric id which can be used to later add to a group.</p>
 
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	function inputName() {
 		var i = undo.startGroup('input name');
 			calculateSomething();
@@ -193,7 +193,7 @@ links:
 
 <p>The number of objects available are in the .undo_available and .redo_available properties, and an array of the object's names are in undo_names and redo_names.</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	undo.undo_available; // The amount of undos possible
 	undo.redo_available; // The amount of undos possible
 	undo.undo_names; // The names of the undo objects (eg: "Set title")
@@ -206,7 +206,7 @@ links:
 
 <p>The settings can be set either by passing an object to the constructor or by using the changeSettings method. It will only change the settings passed, rather than overwriting them all.</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	undo = new UndoManager({ max_undo: 10}); // Allow 10 undos
 	undo.changeSettings({ max_undo 30}); // Allow 20 undos
 {% endhighlight %}
@@ -215,7 +215,7 @@ links:
 
 <p>Sometimes you need to update the interface, or otherwise alert the user, when something has been added to the undo/redo queue. jsUndoable caters to this by allowing for callbacks. Just pass functions as the "undoChange" or "redoChange" settings.</p>
 
-{% highlight JavaScript %}
+{% highlight javascript %}
 	undo = new UndoManager({
 		undoChange: function() {
 			alert("UNDO CHANGE");
