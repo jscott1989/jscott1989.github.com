@@ -43,7 +43,7 @@ layout: base
 		{% endif %}
 
 		{% if page.links %}
-			<div id="links" class="colour2">
+			<div id="links" class="colour4">
 				<div class="inner">
 					<h2>Links</h2>
 					<ul>
@@ -52,6 +52,19 @@ layout: base
 						{% endfor %}
 					</ul>
 				</div>
+			</div>
+		{% endif %}
+
+		{% if site.categories[page.shortcode] %}
+			<div id="blogposts" class="blogposts colour2">
+				<div class="inner">
+					<h2>Blog Posts</h3>
+					<ul>
+						{% for  post in site.categories[page.shortcode] %}
+							<li class="post"><a href="{{ post.url }}">{{ post.title }}</a></li>
+						{% endfor %}
+					</ul>
+				</h2>
 			</div>
 		{% endif %}
 		<!--<div class="colour1">

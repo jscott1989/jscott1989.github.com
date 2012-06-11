@@ -61,13 +61,13 @@ body {
 	background: #FCCF65;
 }
 
-#column2 h2 {
+.blogposts h2 {
 	background-image: url('../img/balloon.png');
 	background-repeat: no-repeat;
 	padding-left: 38px;
 }
 
-#column2 ul {
+.blogposts ul {
 	list-style: none;
 	margin:0;
 }
@@ -114,16 +114,23 @@ body {
 	background: #A9CF54;
 }
 
-#portfolio {
+.colour4 {
 	border-left: 10px solid #B7BDC4;
+}
+
+#portfolio {
 	margin-bottom: 20px;
 }
-#portfolio h2 {
+
+.colour4 h2 {
 	background: url('../img/did.png') 0px 3px no-repeat #B7BDC4;
+}
+
+#portfolio h2 {
 	padding-left: 38px;
 }
 
-#portfolio .more {
+.colour4 .more {
 	background: #B7BDC4;
 }
 
@@ -216,7 +223,7 @@ body {
 	background-repeat: no-repeat;
 }
 
-#downloads ul li.webapplication, #links ul li.webapplication {
+#downloads ul li.dissertation, #links ul li.dissertation {
 	background-image: url('../img/icons/dissertation.png');
 	background-repeat: no-repeat;
 }
