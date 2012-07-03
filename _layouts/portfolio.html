@@ -10,6 +10,13 @@ layout: base
 	<div class="span8">
 		{{ content }}
 
+		{% if page.github %}
+			<h2>Code</h2>
+			<div id="repo"></div>
+			<script src="/static/js/repo.js"></script>
+			<script>$('#repo').repo({ user: '{{ page.github.username }}', name: '{{ page.github.repo }}' });</script>
+		{% endif %}
+
 		<div id="disqus_thread"></div>
 		<script type="text/javascript">
 			/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
@@ -71,15 +78,16 @@ layout: base
 		{% if site.categories[page.shortcode] %}
 			<div id="blogposts" class="blogposts colour2">
 				<div class="inner">
-					<h2>Blog Posts</h3>
+					<h2>Blog Posts</h2>
 					<ul>
 						{% for  post in site.categories[page.shortcode] %}
 							<li class="post"><a href="{{ post.url }}">{{ post.title }}</a></li>
 						{% endfor %}
 					</ul>
-				</h2>
+				</div>
 			</div>
 		{% endif %}
+		
 		<!--<div class="colour1">
 			<div class="inner">
 				<h2>Company</h2>
