@@ -6,8 +6,7 @@ category: sagamedevvii
 
 <p>There was no Day 1 update as I spent the entire day banging my head against this project trying to get planets to orbit the sun correctly. It turned out it was very simple! This is the code:</p>
 
-{% highlight python %}
-
+<pre class="prettyprint">
 void Start () {
 	direction = target.transform.position - transform.position;
 	cross = Vector3.Cross(Camera.main.transform.forward, direction);
@@ -16,7 +15,7 @@ void Start () {
 void Update () {
 	transform.RotateAround(target.position, cross, (0 - orbitSpeed) * Time.deltaTime);
 }
-{% endhighlight %}
+</pre>
 
 <p>Simple, eh? So the idea is that the planets will orbit predictably as they will always begin their rotation towards the player across the centre of the Sun. This should allow people to accurately place the planets on the correct orbit.</p>
 

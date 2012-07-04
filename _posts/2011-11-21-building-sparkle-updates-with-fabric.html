@@ -10,7 +10,7 @@ type: regular
 <p>This is my <a href="http://docs.fabfile.org/">fabfile</a> which builds and releases a version of my Objective-C project. It updates the version (resetting it to 99.99.99 afterwards), swaps development and live versions of files, builds the system, creates and uploads deltas used for <a href="http://sparkle.andymatuschak.org/">Sparkle</a> and finally uploads the latest version itself. I'm sure it's not perfect but it might help others trying to do the same thing.</p>
 
 
-{% highlight python %}
+<pre class="prettyprint">
 from fabric.api import local, run, env, settings
 from fabric.operations import put, prompt
 
@@ -133,4 +133,4 @@ def release(version, deltas=''):
         local("rm seaweed_" + version + ".zip;")
     else:
         print "Build Error"
-{% endhighlight %}
+</pre>

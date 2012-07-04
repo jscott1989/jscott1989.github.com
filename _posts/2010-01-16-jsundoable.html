@@ -24,57 +24,57 @@ github:
 
 <p>First you need to create an UndoManager object, which controls the scope of every undo operation. You should have a separate UndoManager for unrelated undo queues, different tabs for example.</p>
 
-{% highlight javascript %}
-	var undo = new UndoManager();
-{% endhighlight %}
+<pre class="prettyprint">
+var undo = new UndoManager();
+</pre>
 <p>This is then used to register the undo capabilities of each undoable function. For example, if an application has the following functions:</p>
 
-{% highlight javascript %}
-	var total = 0;
-	
-	function add_to_total(number) {
-		total += number;
-	}
-{% endhighlight %}
+<pre class="prettyprint">
+var total = 0;
+
+function add_to_total(number) {
+	total += number;
+}
+</pre>
 
 <p>To make this undoable, the code would need to change to:</p>
 
-{% highlight javascript %}
-	var total = 0;
-	
-	function add_to_total(number) {
-		undo.undoable('add ' + number + ' to total', add_to_total, [-number]);
-		total += number;
-	}
-{% endhighlight %}
+<pre class="prettyprint">
+var total = 0;
+
+function add_to_total(number) {
+	undo.undoable('add ' + number + ' to total', add_to_total, [-number]);
+	total += number;
+}
+</pre>
 <p>(this assumes that the undo object is already created). With this setup the following code would result in an output of "1", "3", "6", "3", "1", "3", "1", "3" (as the application moves forwards and backwards through the undo queue).</p>
 
-{% highlight javascript %}
-	var undo = new UndoManager();
-	var total = 0;
-	
-	function add_to_total(number) {
-		undo.undoable('add ' + number + ' to total', add_to_total, [-number]);
-		total += number;
-	}
-	
-	add_to_total(1);
-	console.log(total);
-	add_to_total(2);
-	console.log(total);
-	add_to_total(3);
-	console.log(total);
-	undo.undo();
-	console.log(total);
-	undo.undo();
-	console.log(total);
-	undo.redo();
-	console.log(total);
-	undo.undo();
-	console.log(total);
-	undo.redo();
-	console.log(total);
-{% endhighlight %}
+<pre class="prettyprint">
+var undo = new UndoManager();
+var total = 0;
+
+function add_to_total(number) {
+	undo.undoable('add ' + number + ' to total', add_to_total, [-number]);
+	total += number;
+}
+
+add_to_total(1);
+console.log(total);
+add_to_total(2);
+console.log(total);
+add_to_total(3);
+console.log(total);
+undo.undo();
+console.log(total);
+undo.undo();
+console.log(total);
+undo.redo();
+console.log(total);
+undo.undo();
+console.log(total);
+undo.redo();
+console.log(total);
+</pre>
 
 <p>This is capable of working with much more complicated functions (passing all of the variables required to reverse a function as an array in the third parameter, and passing context as the fourth parameter). However it is recommended that the most simple functions register using undoable() and the more complicated functions group these together using jsUndoable's group functionality.</p>
 
@@ -82,30 +82,30 @@ github:
 
 <p>Groups are used to group (duh?) together the undo callbacks from a number of smaller functions. For example, look at the following code sample, taken (sans comments and lots of unrelated code) from my project Cognatus.</p>
 
-{% highlight javascript %}
-	// ...
-	connectTo: function(operation, port) {
-		operation.setIn(port, this);
-		this.setOut(operation, port);
-	},
-	
-	// ...
-	
-	setIn: function(port, operation) {
-		this.ins[port].disconnectOut();
-		this.clearError(cognatus.Operation.MISSING_CONNECTION_ERROR + port);
-		this.ins[port] = operation;
-		this.cascadeOut();
-	},
-	
-	setOut: function(operation, port) {
-		this.disconnectOut();
-		this.out = operation;
-		this.out_n = port;
-	},
-	
-	// ...
-{% endhighlight %}
+<pre class="prettyprint">
+// ...
+connectTo: function(operation, port) {
+	operation.setIn(port, this);
+	this.setOut(operation, port);
+},
+
+// ...
+
+setIn: function(port, operation) {
+	this.ins[port].disconnectOut();
+	this.clearError(cognatus.Operation.MISSING_CONNECTION_ERROR + port);
+	this.ins[port] = operation;
+	this.cascadeOut();
+},
+
+setOut: function(operation, port) {
+	this.disconnectOut();
+	this.out = operation;
+	this.out_n = port;
+},
+
+// ...
+</pre>
 
 <p>Already a lot of functionality to undo here. Let's see... setting this.ins[port], setting this.out and this.out_n, as well as anything which this.setOut, this.clearError, this.cascadeOut, or this.disconnectOut does.</p>
 
@@ -115,46 +115,46 @@ github:
 
 <p>The solution is to register the undoable objects at the lowest level possible and group them together in higher level functions, as shown below.</p>
 
-{% highlight javascript %}
-	// ...
-	connectTo: function(operation, port) {
-		undo.startGroup('make connection');
-			operation.setIn(port, this);
-			this.setOut(operation, port);
-		undo.endGroup();
-	},
-	
-	// ...
-	
-	setIn: function(port, operation) {
-		undo.startGroup('set in');
-			this.ins[port].disconnectOut();
-			this.clearError(cognatus.Operation.MISSING_CONNECTION_ERROR + port);
-			this.uSetA(['ins', port], operation);
-			this.cascadeOut();
-		undo.endGroup();
-	},
-	
-	setOut: function(operation, port) {
-		undo.startGroup('set out');
-			this.disconnectOut();
-			this.uSet('out', operation);
-			this.uSet('out_n', port);
-		undo.endGroup();
-	},
-	
-	uSet: function(variable, value) {
-		undo.undoable('set ' + variable, this.uSet, [variable, this[variable]], this);
-		this[variable] = value;
-	},
-	
-	uSetA: function(keys, value) {
-		// More complicated code for multi dimension arrays
-		undo.undoable('set ' + key, this.uSetA, [keys, target[key]], this);
-	},
-	
-	// ...
-{% endhighlight %}
+<pre class="prettyprint">
+// ...
+connectTo: function(operation, port) {
+	undo.startGroup('make connection');
+		operation.setIn(port, this);
+		this.setOut(operation, port);
+	undo.endGroup();
+},
+
+// ...
+
+setIn: function(port, operation) {
+	undo.startGroup('set in');
+		this.ins[port].disconnectOut();
+		this.clearError(cognatus.Operation.MISSING_CONNECTION_ERROR + port);
+		this.uSetA(['ins', port], operation);
+		this.cascadeOut();
+	undo.endGroup();
+},
+
+setOut: function(operation, port) {
+	undo.startGroup('set out');
+		this.disconnectOut();
+		this.uSet('out', operation);
+		this.uSet('out_n', port);
+	undo.endGroup();
+},
+
+uSet: function(variable, value) {
+	undo.undoable('set ' + variable, this.uSet, [variable, this[variable]], this);
+	this[variable] = value;
+},
+
+uSetA: function(keys, value) {
+	// More complicated code for multi dimension arrays
+	undo.undoable('set ' + key, this.uSetA, [keys, target[key]], this);
+},
+
+// ...
+</pre>
 
 <p>As you can see the setting of variables is the actual level where the undoable objects are registered, and the higher level functionality simply wraps these in groups. A group is treated as a single undo object, so calling undo.undo(); will roll back all of these changes.</p>
 
@@ -162,13 +162,13 @@ github:
 
 <p>If a group has to be aborted, due to an error or exception, or any other reason it won't reach an endGroup call, the exitGroup function can be used</p>
 
-{% highlight javascript %}
-	// Exit and roll back changes
-	undo.exitGroup();
-	
-	// Exit and leave changes
-	undo.exitGroup(false);
-{% endhighlight %}
+<pre class="prettyprint">
+// Exit and roll back changes
+undo.exitGroup();
+
+// Exit and leave changes
+undo.exitGroup(false);
+</pre>
 
 <p>If the should_rollback parameter isn't false then all of the undo objects registered so far will be rolled back. If the parameter is false then the group will be removed from the undo queue and the objects added to it will just be ignored.</p>
 
@@ -177,18 +177,18 @@ github:
 <p>If you're using model dialogs, or anything else using callbacks - it's sometimes important that you are able to group together undo objects from unrelated functions. This is possible because startGroup returns a numeric id which can be used to later add to a group.</p>
 
 
-{% highlight javascript %}
-	function inputName() {
-		var i = undo.startGroup('input name');
-			calculateSomething();
-			functionWithCallback(function() {
-				undo.resumeGroup(i);
-				doSomethingElse();
-				undo.endGroup();
-			});
-		undo.endGroup();
-	}
-{% endhighlight %}
+<pre class="prettyprint">
+function inputName() {
+	var i = undo.startGroup('input name');
+		calculateSomething();
+		functionWithCallback(function() {
+			undo.resumeGroup(i);
+			doSomethingElse();
+			undo.endGroup();
+		});
+	undo.endGroup();
+}
+</pre>
 
 <p>If the undo() method is called and then resumeGroup is called there will be errors. Only use this when undo() is blocked between the first endGroup() and the resumeGroup().</p>
 
@@ -196,39 +196,39 @@ github:
 
 <p>The number of objects available are in the .undo_available and .redo_available properties, and an array of the object's names are in undo_names and redo_names.</p>
 
-{% highlight javascript %}
-	undo.undo_available; // The amount of undos possible
-	undo.redo_available; // The amount of undos possible
-	undo.undo_names; // The names of the undo objects (eg: "Set title")
-	undo.redo_names; // The names of the redo objects
-	undo.undo_names[undo.undo_available - 1]; // The next object on the queue
-	undo.redo_names[undo.redo_available - 1]; // The next object on the queue
-{% endhighlight %}
+<pre class="prettyprint">
+undo.undo_available; // The amount of undos possible
+undo.redo_available; // The amount of undos possible
+undo.undo_names; // The names of the undo objects (eg: "Set title")
+undo.redo_names; // The names of the redo objects
+undo.undo_names[undo.undo_available - 1]; // The next object on the queue
+undo.redo_names[undo.redo_available - 1]; // The next object on the queue
+</pre>
 
 <h3>Settings</h3>
 
 <p>The settings can be set either by passing an object to the constructor or by using the changeSettings method. It will only change the settings passed, rather than overwriting them all.</p>
 
-{% highlight javascript %}
-	undo = new UndoManager({ max_undo: 10}); // Allow 10 undos
-	undo.changeSettings({ max_undo 30}); // Allow 20 undos
-{% endhighlight %}
+<pre class="prettyprint">
+undo = new UndoManager({ max_undo: 10}); // Allow 10 undos
+undo.changeSettings({ max_undo 30}); // Allow 20 undos
+</pre>
 
 <h3>Callbacks</h3>
 
 <p>Sometimes you need to update the interface, or otherwise alert the user, when something has been added to the undo/redo queue. jsUndoable caters to this by allowing for callbacks. Just pass functions as the "undoChange" or "redoChange" settings.</p>
 
-{% highlight javascript %}
-	undo = new UndoManager({
-		undoChange: function() {
-			alert("UNDO CHANGE");
-		},
-		
-		redoChange: function() {
-			alert("REDO CHANGE");
-		}
-	})
-{% endhighlight %}
+<pre class="prettyprint">
+undo = new UndoManager({
+	undoChange: function() {
+		alert("UNDO CHANGE");
+	},
+	
+	redoChange: function() {
+		alert("REDO CHANGE");
+	}
+})
+</pre>
 
 <h3>Undo limits</h3>
 
