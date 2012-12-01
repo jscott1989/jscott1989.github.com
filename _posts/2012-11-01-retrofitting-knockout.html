@@ -1,0 +1,91 @@
+---
+title: Retrofitting Knockout
+layout: post
+category: wazoku
+---
+
+<p>Seeing the Meteor screencast a few months ago - it was obvious that this is the future of web development. It might not be meteor specifically - but I think it’s very likely that in 5 years time we'll be using technology closer to Meteor than Django.</p>
+
+<p>This makes it an awkward time to be starting a project - because Meteor is absolutely not ready for production (up until its most recent release everyone had root access to the database) - but writing using Django I keep getting reminded of how much easier some of this could be if I was using Meteor.</p>
+
+<p>One of the recent goals for our Spotlight application is to make it more reactive - vote totals should update when the user does something to change them, comment counts shouldn't fall behind because the user decides to comment, and as much as possible we should keep the user on a single screen and not take them elsewhere to perform actions.</p>
+
+<p>There are a number of Javascript libraries to help structure modern web applications on the client side (Knockout, Backbone, Angular, etc.) and they all support binding the client side models to REST APIs. Unfortunately, our API is still under production and not really ready to be bound to in this way. We also use CouchDB on the backend and pass data around in Python dictionaries rather than Django model objects. This makes it difficult to integrate with Tastypie so we can't just generate a REST API that way. (Using CouchDB also makes it difficult to use many other Django apps - but that's for another blog post!).</p>
+
+<p>We decided to use Knockout for client side binding as it seems the simplest to get to grips with and mapped closely to the way we were doing things already.</p>
+
+<h2>Binding view to viewmodel</h2>
+
+<p>The first attempt at integrating Knockout into Spotlight had each page include Knockout and then set up a viewmodel. As we used Knockout more and more this was slowing us down so we decided to automatically initialise a viewmodel on every page using information passed from the view.</p>
+
+<pre class="prettyprint">
+var viewmodel = ko.mapping.fromJS({{viewmodel|safe}});
+</pre>
+
+<p>This works fine, but since this data is coming directly from the database it includes a lot of information that we don’t want the user to be able to see (password hashes, etc.). Right now we’re in the middle of changing the infrastructure so our app gets data via an API rather than from the database directly. This would solve the problem as the application would then only get the data the user is allowed to see - but for the time being we have to do some extra filtering. We do this through a custom render method which takes a viewmodel as a parameter.</p>
+
+<pre class="prettyprint">
+def render(request, template, variables = None, viewmodel = None):
+	# ...
+	variables['viewmodel'] = prepare_viewmodel(viewmodel)
+	return django_render(request, template, variables)
+</pre>
+
+<p>prepare_viewmodel is an quick and dirty method I wrote to whitelist what data is allowed to be passed to the client. You can <a href="https://gist.github.com/4181277">see it here</a> but I look forward to being able to get rid of it.</p>
+
+<h2>Updating the viewmodel</h2>
+
+<p>This method of setting the viewmodel from a view isn’t as neat as binding directly to a REST API but it does provide some advantages.</p>
+
+<p>We wrote some Javascript so that, when the class "ko-ajax" is added to a link or form, and the link is clicked - instead of following the link as usual, an AJAX request will be made to the href. Any data returned from the AJAX request will be used to update the viewmodel. This means that we can have views such as follow (below). This view makes an API request so the user follows the idea, then returns an updated viewmodel.</p>
+
+<p>The result of this is that when the user clicks the "follow" link, the viewmodel is updated so that idea.is_following is set to true. The "follow" link then hides to be replaced by an "unfollow" link, and anything else on the page relying on this will also get updated.</p>
+
+<pre class="prettyprint">
+def follow(request, idea_id):
+	request.api.users.follow(idea_id)
+
+	return json_response(request, viewmodel={'idea': [{'is_following': True}, ['is_following']]})
+</pre>
+
+<p>We can update as much of the viewmodel as we like here.</p>
+
+<pre class="prettyprint">
+def follow(request, idea_id):
+	request.api.users.follow(idea_id)
+	idea = request.api.ideas.get(idea_id)
+
+	viewmodel = {
+		'idea': [idea, ['_id', 'is_following', 'approved_flag', 'rejected_flag', 'completed_flag']] # ...
+	}
+
+	return json_response(request, viewmodel=viewmodel)
+</pre>
+
+<h2>Keeping DRY</h2>
+
+<p>The next problem to deal with is if we’re updating the viewmodel on many AJAX requests, we’re going to be repeating the whitelisting step over and over. In order to avoid repeating the code (which would have to be changed in many places every time we want to whitelist another field), we can instead redirect from the AJAX view back to the view which renders the page - and customise the render method to avoid redoing the template rendering when it’s not needed.</p>
+
+<pre class="prettyprint">
+def follow(request, idea_id):
+	request.api.users.follow(idea_id)
+	return redirect(request, '/idea/%s' % idea_id)
+</pre>
+
+<pre class="prettyprint">
+# in render()
+if (request.method == 'POST' and request.POST.get('ko-ajax')) or request.GET.get('ko-ajax'):
+	return json_response(request, viewmodel=viewmodel)
+</pre>
+
+<p>This would mean that when the "follow" button is clicked, the user follows the idea and then the entire viewmodel is updated. This allows us to keep the entire page in sync with whatever the user does without having to code each part individually.</p>
+
+<h2>Conclusions</h2>
+
+<p>This method is working well for us now - though the code isn’t quite as clean as I would like, it allows us to very quickly put together reactive interfaces with very little boilerplate holding it together.</p>
+
+<p>Once our API is returning only the fields the user can see (avoiding password hashes and the like) we can remove the prepare_viewmodel step, which right now is the worst part of this process.</p>
+
+<p>Of course, it probably won't be long after that that we'll be able to bind the Knockout models directly to the API. Though I'm not sure if that solution would allow us to build new actions as quickly as this one does. When the time comes we can evaluate which of the options is most appropriate.</p>
+
+<p>I welcome any comments or improvements - especially to prepare_viewmodel which I threw together in a hurry an haven't gone back to tidy up. Or let me know in the comments how you make your own apps more responsive. I'm interested to hear different solutions to the same problem.</p>
