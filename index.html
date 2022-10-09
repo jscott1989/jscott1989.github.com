@@ -1,70 +1,11 @@
----
-layout: base
-title: JScott.me
----
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+</head>
+<body>
 
-<div class="row">
-	<div id="column1" class="span4 colour1">
-		<div class="inner">
-			<h2>Hi, I'm Jonny</h2>
-			<div class="content">
-				<img class="hidden-phone" src="/static/img/jonny.png">
-				<p>I'm a first year PhD student, studying Computer Science at <a href="http://www.southampton.ac.uk/">the University of Southampton</a>. I was previously technical lead at Idea Management startup <a href="http://www.wazoku.com">Wazoku</a>. I prefer working with Python or Javascript, although my most recent project is a <a href="http://seaweedplayer.com">long distance media player</a> created in Objective-C.</p>
-
-				<p>I'm available for <a href="/freelance.html">freelance work</a>, and have experience with Python, PHP, Java, HTML, CSS, Javascript, and a few other languages. <a href="/static/files/cv.pdf">Check out my CV</a> or contact me at <a class="cma" href="jscott.me" title="jonathan">myfirstnameATatATthisdomainDOTdotDOTme</a> if you have an interesting project I'd be a good match for.</p>
-			</div>
-		</div>
-	</div>
-	<div id="column2" class="blogposts span4 colour2">
-		<div class="inner">
-			<h2>Stuff I say</h2>
-			<div class="content">
-				<ul>
-					{% for post in paginator.posts %}
-						{% unless post.category == "portfolio" %}
-							{% unless post.category == "academic" %}
-								<li class="post"><a href="{{ post.url }}">{{ post.title }}</a></li>
-							{% endunless %}
-						{% endunless %}
-					{% endfor %}
-					<li class="more"><a href="/archive.html">View more posts</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div id="column3" class="span4">
-		<div class="inner colour3" id="stuff_i_do">
-			<h2>Stuff I do</h2>
-			<div class="content">
-				<ul>
-					<li><a href="/phd.html"><img class="hoverable" alt="PhD in Computer Science" title="PhD in Computer Science" src="static/img/portfolio/small/uos.png" data-original-src="static/img/portfolio/pixelated/uos.png"></a></li>
-					<li><a href="/seaweed.html"><img class="hoverable" alt="Seaweed Player" title="Seaweed Player" src="static/img/portfolio/small/seaweedplayer.png" data-original-src="static/img/portfolio/pixelated/seaweedplayer.png"></a></li>
-					<li><a href="/freelance.html"><img class="hoverable" alt="Freelance" title="Freelance" src="static/img/portfolio/small/freelance.png" data-original-src="static/img/portfolio/pixelated/freelance.png"></a></li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="inner colour4" id="portfolio">
-			<h2>Stuff I did</h2>
-			<div class="content">
-				<ul>
-					{% for post in site.categories.portfolio %}
-						<li class="{{post.type}}"><span class="data">{{post.date|date:"%d/%m/%y"}}</span><a href="{{ post.url }}">{{post.title}}</a></li>
-					{% endfor %}
-					<!--<li class="more"><a href="/portfolio.html">View more stuff</a></li>-->
-				</ul>
-			</div>
-		</div>
-
-		<!--<div class="inner" id="academics">
-			<h2>Academics <span class="hidden-tablet">'n' that</span></h2>
-			<div class="content">
-				<ul>
-					{% for post in site.categories.academic %}
-						<li><a href="{{ post.url }}"><img class="hoverable" alt="{{ post.title }}" title="{{ post.title }}" src="static/img/portfolio/small/{{ post.img }}.png" data-original-src="static/img/portfolio/pixelated/{{ post.img }}.png"></a></li>
-					{% endfor %}
-				</ul>
-			</div>
-		</div> -->
-	</div>
-</div>
+</body>
+</html>
